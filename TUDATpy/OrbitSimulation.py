@@ -31,7 +31,7 @@ bodies = environment_setup.create_system_of_bodies(body_settings)
 #CHESS 1
 bodies.create_empty_body("CHESS1")
 
-bodies.get_body("CHESS1").set_constant_mass(4.0)
+bodies.get_body("CHESS1").set_constant_mass(4.874)
 
 reference_area_radiation = 0.1159
 radiation_pressure_coefficient = 1.2
@@ -58,7 +58,7 @@ environment_setup.add_aerodynamic_coefficient_interface(
 #CHESS 2
 bodies.create_empty_body("CHESS2")
 
-bodies.get_body("CHESS2").set_constant_mass(4.0)
+bodies.get_body("CHESS2").set_constant_mass(4.874)
 
 reference_area_radiation = 0.1159
 radiation_pressure_coefficient = 1.2
@@ -126,7 +126,7 @@ initial_state_CHESS1 = conversion.keplerian_to_cartesian(
     gravitational_parameter = earth_gravitational_parameter,
     semi_major_axis = 6928136,
     eccentricity = 0.0,
-    inclination = np.deg2rad(97.5919),
+    inclination = np.deg2rad(97.5926),
     argument_of_periapsis = np.deg2rad(0.0),
     longitude_of_ascending_node = np.deg2rad(90.0),
     true_anomaly = np.deg2rad(0.0)
@@ -134,9 +134,9 @@ initial_state_CHESS1 = conversion.keplerian_to_cartesian(
 
 initial_state_CHESS2 = conversion.keplerian_to_cartesian(
     gravitational_parameter = earth_gravitational_parameter,
-    semi_major_axis = 6928136,
+    semi_major_axis = 7078136,
     eccentricity = 0.0424,
-    inclination = np.deg2rad(97.5919),
+    inclination = np.deg2rad(97.5926),
     argument_of_periapsis = np.deg2rad(0.0),
     longitude_of_ascending_node = np.deg2rad(90.0),
     true_anomaly = np.deg2rad(0.0)
