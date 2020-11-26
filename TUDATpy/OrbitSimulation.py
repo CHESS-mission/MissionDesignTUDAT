@@ -11,7 +11,7 @@ from tudatpy.util import result2array
 spice_interface.load_standard_kernels()
 
 simulation_start_epoch = 631108800.0
-simulation_end_epoch = 638971199.0
+simulation_end_epoch = 662731199.0 #31 dec 2020   #31 mars 2020 : 638971199.0
 
 
 # Bodies
