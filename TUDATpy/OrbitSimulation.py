@@ -33,7 +33,7 @@ bodies.create_empty_body("CHESS1")
 
 bodies.get_body("CHESS1").set_constant_mass(4.0)
 
-reference_area_radiation = 0.09
+reference_area_radiation = 0.1159
 radiation_pressure_coefficient = 1.2
 occulting_bodies = ["Earth"]
 radiation_pressure_settings = environment_setup.radiation_pressure.cannonball(
@@ -43,8 +43,8 @@ radiation_pressure_settings = environment_setup.radiation_pressure.cannonball(
 environment_setup.add_radiation_pressure_interface(
             bodies, "CHESS1", radiation_pressure_settings )
 
-drag_coefficient = 1.5
-reference_area_drag_1 = 0.09
+drag_coefficient = 2.2
+reference_area_drag_1 = 0.0333
 
 aero_coefficient_settings_1 = environment_setup.aerodynamic_coefficients.constant(
     reference_area_drag_1,[drag_coefficient,0,0],
@@ -60,7 +60,7 @@ bodies.create_empty_body("CHESS2")
 
 bodies.get_body("CHESS2").set_constant_mass(4.0)
 
-reference_area_radiation = 0.09
+reference_area_radiation = 0.1159
 radiation_pressure_coefficient = 1.2
 occulting_bodies = ["Earth"]
 radiation_pressure_settings = environment_setup.radiation_pressure.cannonball(
@@ -70,8 +70,8 @@ radiation_pressure_settings = environment_setup.radiation_pressure.cannonball(
 environment_setup.add_radiation_pressure_interface(
             bodies, "CHESS2", radiation_pressure_settings )
 
-drag_coefficient = 1.5
-reference_area_drag_2 = 0.09
+drag_coefficient = 2.2
+reference_area_drag_2 = 0.0333
 
 aero_coefficient_settings_2 = environment_setup.aerodynamic_coefficients.constant(
     reference_area_drag_2,[drag_coefficient,0,0],
