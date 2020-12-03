@@ -22,9 +22,8 @@ TimestepSec=   seconds(Timestep); % Seconds
 Dates=(InitialDate:TimestepSec:FinalDate)';
 [Year,Month,Day]=ymd(InitialDate);
 [Hours,Minutes,Seconds]=hms(InitialDate);
-Time=Timestep*(0:(length(Dates)-1));
 EarthRotation=7.292115e-5;
-Phi=EarthRotation*Time;
+Phi=EarthRotation*Timestep;
 
 GS_llaS=[LatS,LonS,Alt];
 GS_ECI_S=zeros(length(Dates),3);
