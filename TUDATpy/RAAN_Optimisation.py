@@ -7,6 +7,18 @@ from tudatpy.kernel.simulation import propagation_setup
 from tudatpy.kernel.astro import conversion
 from tudatpy.util import result2array
 
+# Choose RAAN values
+
+number_RAAN=3600 # defines the number of spacecraft, each with a different RAAN value in the initial state
+
+RAAN=np.linspace(0,360,number_RAAN)
+
+SC_NAMES=[]
+for i in range(0,number_RAAN):
+    SC_NAMES.append('CHESS'+str(RAAN[i])) # creates the name of each spacecraft
+    
+
+
 # Simulation Setup
 spice_interface.load_standard_kernels()
 
@@ -25,14 +37,6 @@ body_settings = environment_setup.get_default_body_settings(
 
 bodies = environment_setup.create_system_of_bodies(body_settings)
 
-
-# Spacecraft
-
-#CHESS 1
-bodies.create_empty_body("CHESS1")
-
-bodies.get_body("CHESS1").set_constant_mass(4.874)
-
 reference_area_radiation = 0.1159
 radiation_pressure_coefficient = 1.2
 
@@ -40,26 +44,50 @@ occulting_bodies = ["Earth"]
 radiation_pressure_settings = environment_setup.radiation_pressure.cannonball(
     "Sun", reference_area_radiation, radiation_pressure_coefficient, occulting_bodies)
 
-environment_setup.add_radiation_pressure_interface(
-            bodies, "CHESS1", radiation_pressure_settings )
+central_bodies=[]
 
-# Propagation Setup
-bodies_to_propagate = ["CHESS1"]
+bodies_to_propagate = SC_NAMES
 
-central_bodies = ["Earth"]
 
-# Acceleration Models
 accelerations_settings_chess = dict(
-    Sun=
-    [
-        propagation_setup.acceleration.cannonball_radiation_pressure()
-    ],
-    Earth=
-    [
-        propagation_setup.acceleration.spherical_harmonic_gravity(4,4)
-    ])
+    Sun=[propagation_setup.acceleration.cannonball_radiation_pressure()],
+    Earth=[propagation_setup.acceleration.spherical_harmonic_gravity(4,4)])
 
-acceleration_settings = {"CHESS1": accelerations_settings_chess}
+acceleration_settings ={}
+
+
+earth_gravitational_parameter = bodies.get_body("Earth").gravitational_parameter
+
+dependent_variables_to_save = []
+
+for i in range(0,number_RAAN):
+    bodies.create_empty_body(SC_NAMES[i])
+    
+    bodies.get_body(SC_NAMES[i]).set_constant_mass(4.874)
+    
+    environment_setup.add_radiation_pressure_interface(bodies,SC_NAMES[i],radiation_pressure_settings )
+    
+    central_bodies.append("Earth")
+    
+    acceleration_settings[SC_NAMES[i]]=accelerations_settings_chess
+    
+    initial_state_temp = conversion.keplerian_to_cartesian(
+        gravitational_parameter = earth_gravitational_parameter,
+        semi_major_axis = 6928136,
+        eccentricity = 0.0,
+        inclination = np.deg2rad(97.5926),
+        argument_of_periapsis = np.deg2rad(0.0),
+        longitude_of_ascending_node = np.deg2rad(RAAN[i]),
+        true_anomaly = np.deg2rad(0.0))
+    if i==0:
+        initial_state =initial_state_temp
+    else:
+        initial_state=np.hstack([initial_state,initial_state_temp])
+    
+    dependent_variables_to_save.append(propagation_setup.dependent_variable.single_acceleration_norm(
+        propagation_setup.acceleration.cannonball_radiation_pressure_type, SC_NAMES[i], "Sun"))
+
+
 
 acceleration_models = propagation_setup.create_acceleration_models(
     bodies,
@@ -67,26 +95,7 @@ acceleration_models = propagation_setup.create_acceleration_models(
     bodies_to_propagate,
     central_bodies)
 
-# Initial System State
-earth_gravitational_parameter = bodies.get_body("CHESS1").gravitational_parameter
 
-initial_state = conversion.keplerian_to_cartesian(
-    gravitational_parameter = earth_gravitational_parameter,
-    semi_major_axis = 6928136,
-    eccentricity = 0.0,
-    inclination = np.deg2rad(97.5926),
-    argument_of_periapsis = np.deg2rad(0.0),
-    longitude_of_ascending_node = np.deg2rad(90.0),
-    true_anomaly = np.deg2rad(0.0)
-)
-
-
-# Variables to Export
-dependent_variables_to_save = [
-    propagation_setup.dependent_variable.relative_position("CHESS1","Earth"),
-    propagation_setup.dependent_variable.single_acceleration_norm(
-        propagation_setup.acceleration.cannonball_radiation_pressure_type, "CHESS1", "Sun"
-    )]
 
 # Propagator settings
 propagator_settings = propagation_setup.propagator.translational(
@@ -113,6 +122,6 @@ dynamics_simulator = propagation_setup.SingleArcDynamicsSimulator(
 # Retrieve Results
 
 np.savetxt('RAAN_Optimisation_Results.dat', result2array(dynamics_simulator.dependent_variable_history))
-
+np.savetxt('RAAN_Optimisation_RAANValues.dat',RAAN)
 
 
