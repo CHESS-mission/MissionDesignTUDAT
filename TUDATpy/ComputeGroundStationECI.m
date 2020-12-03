@@ -29,7 +29,7 @@ GS_llaS=[LatS,LonS,Alt];
 GS_ECI_S=zeros(length(Dates),3);
 GS_ECI_S(1,:)=lla2eci(GS_llaS,[Year,Month,Day,Hours,Minutes,Seconds]);
 for k=2:length(Dates)
-    R=[cos(Phi(k)) -sin(Phi(k)) 0;sin(Phi(k)) cos(Phi(k)) 0;0 0 1];
+    R=[cos(Phi) -sin(Phi) 0;sin(Phi) cos(Phi) 0;0 0 1];
     GS_ECI_S(k,:)=(R*GS_ECI_S(k-1,:)')';    
 end
 %% Export results
